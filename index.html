@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Реестр сохранённых сайтов — Цифровое наследие Музея истории ГУЛАГа</title>
+<meta name="description" content="Каталог сохранённых и перенесённых сайтов, связанных с Музеем истории ГУЛАГа: музейные проекты, выставки, персональные архивы и мемориальные инициативы.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1c1a17;
+    --surface: #232019;
+    --surface-hover: #2b271f;
+    --ink: #e9e2d4;
+    --ink-dim: #a89e8a;
+    --ink-faint: #6f6656;
+    --hairline: #38332a;
+    --stamp: #a8402f;
+    --stamp-dim: #7d3126;
+    --status: #7c8a6c;
+    --serif: 'PT Serif', Georgia, serif;
+    --mono: 'PT Mono', 'Courier New', monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  ::selection{ background: var(--stamp-dim); color: var(--ink); }
+
+  .wrap{
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- Header ---------- */
+
+  .masthead{
+    padding: 88px 0 64px;
+    border-bottom: 1px solid var(--hairline);
+    position: relative;
+  }
+
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 22px;
+  }
+
+  h1{
+    font-size: clamp(34px, 5.4vw, 54px);
+    line-height: 1.08;
+    font-weight: 700;
+    margin: 0 0 26px;
+    max-width: 13ch;
+    letter-spacing: -0.01em;
+  }
+
+  .lede{
+    font-size: 18px;
+    color: var(--ink-dim);
+    max-width: 56ch;
+    margin: 0 0 8px;
+  }
+
+  .lede + .lede { margin-top: 14px; }
+
+  .stamp-holder{
+    position: absolute;
+    top: 78px;
+    right: 24px;
+    width: 128px;
+    height: 128px;
+    opacity: 0.92;
+  }
+
+  @media (max-width: 720px){
+    .stamp-holder{ display:none; }
+  }
+
+  .stamp-holder svg{
+    width: 100%;
+    height: 100%;
+    transform: rotate(-9deg);
+  }
+
+  /* ---------- Registry ---------- */
+
+  .registry{ padding: 8px 0 0; }
+
+  .registry-section-label{
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 44px 0 16px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 0;
+  }
+
+  .entry{
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 20px;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--hairline);
+    text-decoration: none;
+    color: inherit;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.2s ease;
+  }
+
+  .entry.visible{ opacity: 1; transform: translateY(0); }
+
+  a.entry:hover, a.entry:focus-visible{
+    background: var(--surface-hover);
+  }
+
+  a.entry:focus-visible{
+    outline: 1px solid var(--stamp);
+    outline-offset: -1px;
+  }
+
+  .entry-num{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-faint);
+    padding-top: 3px;
+  }
+
+  .entry-title-row{
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin-bottom: 6px;
+  }
+
+  .entry-title{
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .entry-tag{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--stamp);
+    border: 1px solid var(--stamp-dim);
+    padding: 2px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .entry-tag.progress{
+    color: var(--status);
+    border-color: var(--status);
+  }
+
+  .entry-desc{
+    color: var(--ink-dim);
+    font-size: 15px;
+    max-width: 62ch;
+    margin: 0 0 8px;
+  }
+
+  .entry-url{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+
+  a.entry:hover .entry-url,
+  a.entry:focus-visible .entry-url{
+    color: var(--stamp);
+  }
+
+  .entry-note{
+    font-size: 13px;
+    font-style: italic;
+    color: var(--ink-faint);
+    margin-top: 6px;
+  }
+
+  /* ---------- Footer ---------- */
+
+  footer{
+    padding: 56px 0 90px;
+    color: var(--ink-faint);
+    font-size: 13px;
+    font-family: var(--mono);
+  }
+
+  footer a{ color: var(--ink-dim); text-decoration: underline; text-underline-offset: 3px; }
+  footer a:hover{ color: var(--stamp); }
+
+  @media (prefers-reduced-motion: reduce){
+    .entry{ transition: none; opacity: 1; transform: none; }
+    html{ scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="stamp-holder" aria-hidden="true">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <path id="arcTop" d="M 20,100 A 80,80 0 0 1 180,100" />
+          <path id="arcBottom" d="M 30,100 A 70,70 0 0 0 170,100" />
+        </defs>
+        <circle cx="100" cy="100" r="92" fill="none" style="stroke:#a8402f" stroke-width="1.5"/>
+        <circle cx="100" cy="100" r="80" fill="none" style="stroke:#a8402f" stroke-width="1"/>
+        <text style="font-family:'PT Mono',monospace;fill:#a8402f" font-size="11.5" letter-spacing="2.5">
+          <textPath href="#arcTop" startOffset="50%" text-anchor="middle">ЦИФРОВОЙ · АРХИВ</textPath>
+        </text>
+        <text style="font-family:'PT Mono',monospace;fill:#a8402f" font-size="10" letter-spacing="2">
+          <textPath href="#arcBottom" startOffset="50%" text-anchor="middle" side="right">СОХРАНЕНО · 2026</textPath>
+        </text>
+        <line x1="70" y1="100" x2="130" y2="100" style="stroke:#a8402f" stroke-width="1.5"/>
+        <line x1="100" y1="70" x2="100" y2="130" style="stroke:#a8402f" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <p class="eyebrow">Реестр № 1 · веб-наследие</p>
+    <h1>Сохранённые сайты</h1>
+    <p class="lede">За два десятилетия у Музея истории ГУЛАГа и связанных с ним инициатив накопилось множество отдельных сайтов — выставочных, мемориальных, персональных архивов, конкурсных площадок. Часть из них со временем осталась без хостинга.</p>
+    <p class="lede">Здесь собраны те, что удалось найти, сохранить и перенести на независимую инфраструктуру — с указанием их нового адреса.</p>
+  </header>
+
+  <main class="registry" id="registry">
+
+    <p class="registry-section-label">Основной сайт</p>
+
+    <a class="entry" href="https://gmig.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 001</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Музей истории ГУЛАГа</span>
+          <span class="entry-tag">Музей</span>
+        </span>
+        <p class="entry-desc">Архив основного сайта музея, который работал в Москве до ноября 2024 года. Материалы музея — коллекция, экспедиции, проекты — сохранены и доступны здесь, хотя само здание в 1-м Самотёчном переулке перешло к новой институции в 2026 году.</p>
+        <span class="entry-url">gmig.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <a class="entry" href="https://360.gmig.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 002</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Виртуальные туры и панорамы 360°</span>
+          <span class="entry-tag">Туры</span>
+        </span>
+        <p class="entry-desc">Сборник интерактивных 3D-туров по памятным местам: постоянная экспозиция музея, лагерь «Днепровский», следственная тюрьма УСВИТЛа, Чаунлаг и другие маршруты. Полный список — на самой странице.</p>
+        <span class="entry-url">360.gmig.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <p class="registry-section-label">Дом на набережной</p>
+
+    <a class="entry" href="https://dnnmuseum.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 003</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Музей «Дом на набережной»</span>
+          <span class="entry-tag">Музей</span>
+        </span>
+        <p class="entry-desc">Архив сайта филиала музея за 2017–2025 годы: новости, история дома и его жителей, альбом об экспедиции на Северный полюс 1937 года.</p>
+        <span class="entry-url">dnnmuseum.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <a class="entry" href="https://ex.dnnmuseum.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 004</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Дом на набережной — ранняя версия сайта</span>
+          <span class="entry-tag">Музей</span>
+        </span>
+        <p class="entry-desc">Более старый снимок сайта того же музея, сохранённый отдельно от текущей версии — период до перехода на WordPress в 2017 году.</p>
+        <span class="entry-url">ex.dnnmuseum.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <p class="registry-section-label">Персональные архивы</p>
+
+    <a class="entry" href="https://dombrovsky.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 005</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Юрий Домбровский</span>
+          <span class="entry-tag">Архив</span>
+        </span>
+        <p class="entry-desc">Цифровой архив писателя (1909–1978), собранный на основе материалов Александра Морозова: биография, переписка, документы, фотографии, аудио- и видеозаписи.</p>
+        <span class="entry-url">dombrovsky.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <p class="registry-section-label">Мемориальные инициативы</p>
+
+    <a class="entry" href="https://30october.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 006</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">30 октября</span>
+          <span class="entry-tag">Мемориал</span>
+        </span>
+        <p class="entry-desc">Сайт, посвящённый Дню памяти жертв политических репрессий: список имён репрессированных, используемый для ежегодного публичного чтения имён 30 октября.</p>
+        <span class="entry-url">30october.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <a class="entry" href="https://rasstrelnyydom.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 007</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Расстрельный дом</span>
+          <span class="entry-tag">Мемориал</span>
+        </span>
+        <p class="entry-desc">Сайт-декларация о музеефикации здания на Никольской, 23, где в 1930–1940-х годах размещалась Военная коллегия Верховного суда СССР. История здания, ход общественной кампании и способы поддержки инициативы.</p>
+        <span class="entry-url">rasstrelnyydom.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <a class="entry" href="https://konkurs.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 008</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Конкурс на монумент</span>
+          <span class="entry-tag">Мемориал</span>
+        </span>
+        <p class="entry-desc">Сайт открытого конкурса 2015 года на архитектурно-скульптурную концепцию монумента жертвам политических репрессий в Москве: условия, жюри и итоги — победил проект «Стена скорби» Георгия Франгуляна.</p>
+        <span class="entry-url">konkurs.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <p class="registry-section-label">Выставки</p>
+
+    <a class="entry" href="https://commissarreturns.gmig.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 009</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Комиссар возвращается</span>
+          <span class="entry-tag">Выставка</span>
+        </span>
+        <p class="entry-desc">Выставка 2013 года из фотоколлекции Дэвида Кинга о Льве Троцком, его окружении и судьбе после высылки из СССР.</p>
+        <span class="entry-url">commissarreturns.gmig.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <a class="entry" href="https://comissarvanishes.gmig.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 010</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Комиссар исчезает</span>
+          <span class="entry-tag">Выставка</span>
+        </span>
+        <p class="entry-desc">Проект о практике ретуширования и удаления опальных деятелей с официальных советских фотографий.</p>
+        <span class="entry-url">comissarvanishes.gmig.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <a class="entry" href="https://gadkie-lebedi.gmig.gulagmemory.org" target="_blank" rel="noopener">
+      <span class="entry-num">№ 011</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Гадкие лебеди</span>
+          <span class="entry-tag">Выставка</span>
+        </span>
+        <p class="entry-desc">Афиша спектакля музея и творческого объединения «Таратумб» по мотивам одноимённой повести Стругацких — синтез кукольного театра и цифровых технологий с участием взрослых актёров и детей. Режиссёры — Ольга Шайдуллина и Антон Калипанов.</p>
+        <span class="entry-url">gadkie-lebedi.gmig.gulagmemory.org</span>
+      </span>
+    </a>
+
+    <p class="registry-section-label">Готовится к переносу</p>
+
+    <div class="entry">
+      <span class="entry-num">№ 012</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Мой ГУЛАГ</span>
+          <span class="entry-tag progress">Готовится</span>
+        </span>
+        <p class="entry-desc">Проект видео-свидетельств людей, переживших репрессии или их последствия. Сейчас размещён на mygulag.ru, перенос на mygulag.org — в работе.</p>
+      </span>
+    </div>
+
+    <div class="entry">
+      <span class="entry-num">№ 013</span>
+      <span class="entry-body">
+        <span class="entry-title-row">
+          <span class="entry-title">Карта ГУЛАГа</span>
+          <span class="entry-tag progress">Готовится</span>
+        </span>
+        <p class="entry-desc">Интерактивная карта лагерных пунктов системы ГУЛАГа. Сейчас размещена на gulagmap.ru, перенос на gulagatlas.org — в работе.</p>
+      </span>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>Реестр ведётся вручную и обновляется по мере переноса новых сайтов. Обновлено: июль 2026.</p>
+  </footer>
+
+</div>
+
+<script>
+  (function(){
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var entries = document.querySelectorAll('.entry');
+    if (prefersReduced || !('IntersectionObserver' in window)) {
+      entries.forEach(function(el){ el.classList.add('visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(items){
+      items.forEach(function(item, i){
+        if (item.isIntersecting) {
+          var el = item.target;
+          var delay = i * 40;
+          setTimeout(function(){ el.classList.add('visible'); }, delay);
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    entries.forEach(function(el){ io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
